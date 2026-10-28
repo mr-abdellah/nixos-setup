@@ -1,0 +1,11 @@
+[Unit]
+Description=Quick Notes local server
+After=network.target
+
+[Service]
+ExecStart=/home/alauxui/.nvm/versions/node/v20.20.2/bin/node /home/alauxui/.local/share/quick-notes/server.mjs
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

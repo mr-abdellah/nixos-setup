@@ -1,0 +1,16 @@
+[metadata]
+name = "clipboard"
+description = "A channel to find and select clipboard"
+requirements = ["cliphist"]
+
+[source]
+command = "cliphist list | head -40"
+watch = 1
+
+[keybindings]
+enter = "actions:copy"
+
+[actions.copy]
+description = "copy entery to clipboard"
+command = "echo {} | cut -f1 | xargs cliphist decode | wl-copy && kill $PPID"
+mode = "execute"

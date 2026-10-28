@@ -1,0 +1,172 @@
+alaux-bigmama-os
+==========
+
+A Copier template for BigMama (https://big-mama.io) NixOS machines.
+
+It defines the operating system, packages and dotfiles shared across the
+company's fleet. Generating from the template stamps out a configured host:
+it sets the username, hostname, git identity, names the per-host folder and
+regenerates the hardware configuration for the machine it runs on.
+
+
+Bootstrap a new host
+---------------------
+
+Requires copier (it ships in the dev shell, or:
+nix --extra-experimental-features 'nix-command flakes' shell nixpkgs#copier).
+
+  copier copy --trust gh:bigmama/bigmama-nixos ./my-host
+  # or from a local clone:
+  copier copy --trust . ./my-host
+
+You'll be asked for:
+
+  username    system user account name
+  hostname    machine hostname (also names the hosts/<hostname> folder)
+  git_name    git user.name
+  git_email   git user.email
+
+--trust is required so the post-copy task can run nixos-generate-config and
+write hosts/<hostname>/hardware-configuration.nix for THIS machine.
+
+Then review and build:
+
+  sudo nixos-rebuild switch --flake .#<hostname>
+
+Pull later template changes into an existing host:
+
+  copier update --trust
+
+
+Flake inputs
+-------------
+
+  nixpkgs          github:nixos/nixpkgs/nixos-26.05
+  nixpkgs-unstable github:nixos/nixpkgs/nixos-unstable
+  home-manager     github:nix-community/home-manager/release-26.05
+  agents           github:numtide/llm-agents.nix   (opencode + claude-code)
+
+
+Repo layout
+------------
+
+  base.nix               shared NixOS options (user, zsh, direnv, gc, nix-ld)
+  flake.nix              flake with host outputs and dev shell
+  flake.lock
+  hosts/
+    nixos/               primary workstation (x86_64-linux)
+      configuration.nix  host-specific system packages and services
+      home.nix           home-manager: GTK theme, systemd user services
+      wayland.nix        niri / Hyprland / display-manager / font packages
+      boot.nix           bootloader config
+      networking.nix     network settings
+      battery.nix        power management
+      nvidia.nix         NVIDIA driver config
+      virtualization.nix Docker / Podman
+      hardware-configuration.nix
+  modules/
+    claude-code.nix      Claude Code agent service
+    home/base.nix        shared home-manager base
+    lid-screen.nix       lid-close screen handling
+    systemd.nix          shared systemd tweaks
+    tailscale.nix        Tailscale VPN
+    virtualization.nix   container runtime options
+  dotfiles/              GNU stow packages (stow --target=$HOME <pkg>)
+    claude/              Claude Code config and projects
+    direnv/              .envrc defaults
+    eww/                 Eww bar widgets (todo, wifi, clock, etc.)
+    hypr/                Hyprland config (secondary compositor)
+    kitty/               kitty terminal config
+    niri/                niri compositor config + keybindings
+    quick-notes/         Quick Notes web app (Supabase-backed)
+    television/          television fuzzy finder config
+    zsh/                 .zshrc, aliases, starship prompt
+  scripts/
+    niri_toggle_window.sh  toggle/spawn a named niri floating window
+  Taskfile.yml           task runner (go-task)
+
+
+Host: nixos (alauxui's workstation)
+-------------------------------------
+
+Compositor     niri (Wayland, scrollable-tiling)
+Browser        Brave
+Terminal       kitty
+Shell          zsh  (autosuggestions, syntax-highlighting, starship prompt)
+Bar            eww  (left / right / bottom / middle panels)
+Wallpaper      swaybg  (~/wallpaper.jpg, systemd user service)
+GTK theme      Flat-Remix-GTK-Grey-Darkest
+Night light    wlsunset  (Algiers coords, 36.75 N / 3.06 E)
+Disks          udiskie  (automount, no tray icon)
+Bluetooth      bluetui  (fast-connect, auto-enable on boot)
+Keyboard       keyd  (CapsLock → Escape)
+Mouse          piper / ratbagd
+Screen lock    hyprlock
+Audio          PipeWire + PulseAudio compat
+AI             Claude Code + opencode  (via numtide/llm-agents.nix)
+
+Key niri bindings
+------------------
+
+  Mod+T            kitty terminal
+  Mod+N            Todo widget  (Brave app)
+  Mod+Shift+N      Quick Notes  (Brave app, Supabase-synced)
+  Mod+B            Brave browser
+  Mod+D            App launcher  (tv cmds)
+  Mod+F            Files picker  (tv files)
+  Mod+E            yazi file manager
+  Mod+P            Passwords  (pass + tv)
+  Mod+I            Wi-Fi  (impala)
+  Mod+Shift+B      Bluetooth  (bluetui)
+  Mod+Shift+O      opencode session picker
+  Mod+Shift+C      Clipboard history
+  Mod+Slash        Show current time  (notify-send)
+  Mod+Shift+Slash  Hotkey overlay
+
+
+Quick Notes
+------------
+
+A minimal notes app that syncs to Supabase. Opens in a standalone Brave
+window (no browser chrome) via the Mod+Shift+N keybinding or the app launcher.
+
+  dotfiles/quick-notes/.local/share/quick-notes/index.html
+  dotfiles/quick-notes/.local/share/applications/quick-notes.desktop
+
+Supabase project: pvztksawvnyeaylkxxrz.supabase.co
+Required table (run once in the SQL editor):
+
+  create table notes (
+    id         text        primary key,
+    title      text        not null default '',
+    body       text        not null default '',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+  );
+  alter table notes enable row level security;
+  create policy "allow all for anon" on notes for all using (true) with check (true);
+
+
+Dotfiles workflow
+------------------
+
+Dotfiles live under dotfiles/ and are symlinked into $HOME with GNU stow.
+To apply a package on a new machine:
+
+  cd ~/nixos/dotfiles && stow --target=$HOME <package>
+
+All packages are already stowed on the current machine.
+
+
+Dev shell
+----------
+
+  nix develop   # provides go-task, stow, pre-commit, copier
+
+
+TODO
+-----
+
+- [ ] login to GitHub and set up SSH key before cloning on a fresh machine
+- [ ] nix-shell -p git  and  nix-shell -p copier  on fresh installs
+- [ ] document per-host secrets / age key setup

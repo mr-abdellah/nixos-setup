@@ -1,0 +1,34 @@
+{pkgs, ...}: {
+  home.username = "alauxui";
+
+  # This value determines the home Manager release that your
+  # configuration is compatible with. This helps avoid breakage
+  # when a new home Manager release introduces backwards
+  # incompatible changes.
+  #
+  # You can update home Manager without changing this value. See
+  # the home Manager release notes for a list of state version
+  # changes in each release.
+
+  programs = {
+    git.settings = {
+      user = {
+        name = "alauxui";
+        email = "alauxui@big-mama.io";
+      };
+      alias = {
+        uncommit = "reset --soft HEAD^";
+        cm = "commit -m";
+      };
+      core = {
+        editor = "nvim";
+        pager = "nvim";
+      };
+      push = {
+        autoSetupRemote = true;
+      };
+    };
+  };
+
+  home.stateVersion = "25.11";
+}

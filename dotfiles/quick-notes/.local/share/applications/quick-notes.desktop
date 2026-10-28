@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Quick Notes
+Comment=Personal notes synced to Supabase
+Exec=brave --app=http://127.0.0.1:7777
+Icon=text-editor
+Terminal=false
+Type=Application
+Categories=Utility;TextEditor;

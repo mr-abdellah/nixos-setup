@@ -1,0 +1,92 @@
+(defvar todo-collapsed false)
+
+(defpoll todo-tasks :interval "1s" :initial "[]"
+  `~/.config/eww/scripts/todo-get.sh`)
+
+(defwidget todo-widget []
+  (box :class "todo-widget" :orientation "v" :space-evenly false
+    ; ── header ──────────────────────────────────────────────
+    (box :class "todo-header" :orientation "h" :space-evenly false
+      (box :orientation "v" :space-evenly false :hexpand true :valign "center"
+        (label :class "todo-date" :halign "start"
+               :text {formattime(EWW_TIME, "%A, %B %d")})
+        (label :class "todo-title" :halign "start" :text "today"))
+      (box :orientation "h" :space-evenly false :valign "start" :spacing 7
+        ; task count: "N left" or "all done" when all tasks are finished
+        (label :class {arraylength(jq(todo-tasks, "[.[] | select(.done == false)]")) == 0 && length(todo-tasks) > 0 ? "todo-count-done" : "todo-count"}
+               :visible {length(todo-tasks) > 0}
+               :text {arraylength(jq(todo-tasks, "[.[] | select(.done == false)]")) == 0
+                       ? "all done"
+                       : "${arraylength(jq(todo-tasks, '[.[] | select(.done == false)]'))} left"})
+        (button :class "todo-collapse-btn"
+                :onclick "eww update todo-collapsed=${!todo-collapsed}"
+          {todo-collapsed ? "+" : "−"})))
+    ; ── body (revealed) ─────────────────────────────────────
+    (revealer :transition "slidedown"
+              :reveal {!todo-collapsed}
+              :duration "150ms"
+      (box :orientation "v" :space-evenly false
+        ; progress bar
+        (box :class "todo-progress-bar" :orientation "h" :space-evenly false
+          (box :class "todo-progress-fill"
+               :hexpand false
+               :style {"min-width: " + round(
+                 (length(todo-tasks) == 0 ? 0 :
+                   arraylength(jq(todo-tasks, "[.[] | select(.done)]")) /
+                   length(todo-tasks) * 100), 0) + "%;"}))
+        ; task list
+        (scroll :vscroll true :vexpand true :class "todo-scroll"
+          (box :orientation "v" :space-evenly false
+            ; empty state
+            (box :class "todo-empty" :visible {length(todo-tasks) == 0} :halign "center"
+              (label :class "todo-empty-label" :text "nothing queued."))
+            ; pending tasks (done == false, sorted first by script)
+            (for task in {jq(todo-tasks, "[.[] | select(.done == false)]")}
+              (box :class "task-row"
+                   :orientation "h"
+                   :space-evenly false
+                (button :class "task-check"
+                        :onclick "~/.config/eww/scripts/todo-toggle.sh '${task.id}'"
+                  "")
+                (label :class "task-label"
+                       :text {task.text}
+                       :hexpand true
+                       :halign "start"
+                       :wrap true)))
+            ; "done" section divider (only when both pending and done exist)
+            (box :class "done-sep"
+                 :visible {arraylength(jq(todo-tasks, "[.[] | select(.done)]")) > 0 &&
+                           arraylength(jq(todo-tasks, "[.[] | select(.done == false)]")) > 0}
+              (label :class "done-sep-label" :text "─────── done ───────"))
+            ; done tasks
+            (for task in {jq(todo-tasks, "[.[] | select(.done)]")}
+              (box :class "task-row done"
+                   :orientation "h"
+                   :space-evenly false
+                (button :class "task-check"
+                        :onclick "~/.config/eww/scripts/todo-toggle.sh '${task.id}'"
+                  "✓")
+                (label :class "task-label"
+                       :text {task.text}
+                       :hexpand true
+                       :halign "start"
+                       :wrap true)))))
+        ; footer with input + clear button
+        (box :class "todo-footer" :orientation "h" :space-evenly false
+          (label :class "input-prefix" :text "+")
+          (input :class "todo-input"
+                 :hexpand true
+                 :placeholder "add a task…"
+                 :onaccept "~/.config/eww/scripts/todo-add.sh {}")
+          (button :class "todo-clear-btn"
+                  :visible {arraylength(jq(todo-tasks, "[.[] | select(.done)]")) > 0}
+                  :onclick "~/.config/eww/scripts/todo-clear.sh"
+            "clear done"))))))
+
+(defwindow todo
+  :monitor 0
+  :geometry (geometry :x "20px" :y "20px" :width "280px" :anchor "top right")
+  :stacking "overlay"
+  :focusable true
+  :namespace "todo"
+  (todo-widget))

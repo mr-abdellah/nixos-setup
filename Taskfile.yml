@@ -1,0 +1,35 @@
+version: '3'
+
+dotenv: ['.env']
+silent: true
+
+tasks:
+  default:
+    desc: prints this help
+    cmd: task -l
+
+  setup:
+    desc: install git hooks (run after fresh clone)
+    cmds:
+      - pre-commit install
+
+  stow:
+    desc: link all the dotfiles
+    dir: dotfiles
+    cmd: stow --verbose --target=$HOME --restow  *
+
+  unstow:
+    desc: unlink all the dotfiles
+    dir: dotfiles
+    cmd: stow --verbose --target=$HOME --delete  *
+
+  test:
+    desc: dry-run rebuild for the current host
+    cmd: sudo nixos-rebuild dry-run --flake .#{{.HOST}}
+    vars:
+      HOST:
+        sh: hostname
+
+  update:
+    desc: update flake
+    cmd: sudo nix --extra-experimental-features 'nix-command flakes' flake update

@@ -1,0 +1,188 @@
+$ground:   #F9F9F7;
+$surface:  #FFFFFF;
+$text:     #18181B;
+$muted:    #A1A1AA;
+$accent:   #6366F1;
+$done-fg:  #C4C4CC;
+$border:   #E4E4E7;
+$font:     "JetBrains Mono", "Fira Mono", "DM Mono", monospace;
+
+* {
+  all: unset;
+  font-family: $font;
+  box-sizing: border-box;
+}
+
+.todo-widget {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 10px 28px rgba(0,0,0,0.10);
+}
+
+/* ── header ── */
+
+.todo-header {
+  padding: 12px 14px 11px;
+  border-bottom: 1px solid $border;
+}
+
+.todo-date {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $muted;
+  margin-bottom: 2px;
+}
+
+.todo-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: $text;
+  letter-spacing: -0.02em;
+}
+
+.todo-count {
+  font-size: 10px;
+  color: $muted;
+  font-weight: 500;
+}
+
+.todo-count-done {
+  font-size: 10px;
+  color: $accent;
+  font-weight: 500;
+}
+
+.todo-collapse-btn {
+  font-size: 15px;
+  line-height: 1;
+  color: $muted;
+  padding: 0 2px;
+  border-radius: 3px;
+
+  &:hover { color: $text; }
+}
+
+/* ── progress bar ── */
+
+.todo-progress-bar {
+  height: 2px;
+  background: $border;
+  min-width: 100%;
+}
+
+.todo-progress-fill {
+  height: 2px;
+  background: $accent;
+  border-radius: 0 2px 2px 0;
+  transition: 350ms cubic-bezier(.4,0,.2,1);
+}
+
+/* ── task list ── */
+
+.todo-scroll {
+  max-height: 272px;
+  padding: 5px 0;
+}
+
+/* ── done separator ── */
+
+.done-sep {
+  padding: 4px 14px 2px;
+}
+
+.done-sep-label {
+  font-size: 8.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: $done-fg;
+}
+
+/* ── task rows ── */
+
+.task-row {
+  padding: 6px 14px;
+  border-radius: 0;
+
+  &:hover { background: $ground; }
+
+  &.done .task-label {
+    color: $done-fg;
+    text-decoration: line-through;
+  }
+
+  &.done .task-check {
+    background: $accent;
+    border-color: $accent;
+    color: white;
+  }
+}
+
+/* ── checkbox — square, terminal vernacular ── */
+
+.task-check {
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: 3px;
+  border: 1.5px solid $border;
+  margin-right: 10px;
+  font-size: 9px;
+  color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+
+  &:hover { border-color: $accent; }
+}
+
+.task-label {
+  font-size: 12px;
+  color: $text;
+  line-height: 1.45;
+}
+
+/* ── empty state ── */
+
+.todo-empty {
+  padding: 22px 14px 18px;
+}
+
+.todo-empty-label {
+  font-size: 11px;
+  color: $muted;
+}
+
+/* ── footer ── */
+
+.todo-footer {
+  border-top: 1px solid $border;
+  padding: 8px 10px 8px 14px;
+}
+
+.input-prefix {
+  font-size: 13px;
+  color: $done-fg;
+  margin-right: 6px;
+}
+
+.todo-input {
+  font-size: 11px;
+  color: $text;
+  min-width: 0;
+
+  &placeholder { color: $muted; }
+}
+
+.todo-clear-btn {
+  font-size: 10px;
+  color: $done-fg;
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin-left: 6px;
+
+  &:hover { color: $muted; }
+}

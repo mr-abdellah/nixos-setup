@@ -1,0 +1,211 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   waybar — tokyonight-ish dark bar
+   Palette: bg #050508 · fg #c0caf5 · dim #565f89 · faint #3b4261
+            blue #7aa2f7 · cyan #7dcfff · teal #73daca · green #9ece6a
+            yellow #e0af68 · red #f7768e · purple #bb9af7
+   ══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "FiraCode Nerd Font", monospace;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    /* kill GTK's default focus/selection artifacts on buttons */
+    box-shadow: none;
+    text-shadow: none;
+}
+
+window#waybar {
+    background: rgba(5, 5, 8, 0.92);
+    color: #c0caf5;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 200ms ease;
+}
+
+/* dim the whole bar when the focused window is fullscreen-adjacent */
+window#waybar.empty {
+    background: rgba(5, 5, 8, 0.75);
+}
+
+/* ── Shared pill style ──────────────────────────────────────────────────── */
+
+#stats,
+#connectivity,
+#shortcuts,
+#wireplumber {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    margin: 5px 0;
+    padding: 0 4px;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+#stats:hover,
+#connectivity:hover,
+#shortcuts:hover,
+#wireplumber:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Left: workspaces ──────────────────────────────────────────────────── */
+
+#workspaces {
+    padding: 0 6px;
+}
+
+#workspaces button {
+    color: #3b4261;
+    padding: 0 7px;
+    font-size: 10px;
+    background: transparent;
+    border-radius: 6px;
+    margin: 6px 1px;
+    transition: color 120ms ease, background 120ms ease;
+}
+
+#workspaces button:hover {
+    color: #7aa2f7;
+    background: rgba(122, 162, 247, 0.10);
+}
+
+#workspaces button.active {
+    color: #7dcfff;
+    background: rgba(125, 207, 255, 0.10);
+}
+
+#workspaces button.urgent {
+    color: #f7768e;
+    background: rgba(247, 118, 142, 0.12);
+}
+
+/* ── Center: clock ──────────────────────────────────────────────────────── */
+
+#clock {
+    color: #c0caf5;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0 14px;
+    transition: color 150ms ease;
+}
+
+#clock:hover {
+    color: #7dcfff;
+}
+
+/* ── Stats group ────────────────────────────────────────────────────────── */
+
+#memory,
+#battery {
+    padding: 0 9px;
+    transition: color 150ms ease;
+}
+
+#memory {
+    color: #7aa2f7;
+}
+
+#battery {
+    color: #9ece6a;
+}
+
+#battery.warning {
+    color: #e0af68;
+}
+
+#battery.critical {
+    color: #f7768e;
+    animation: pulse 2s ease-in-out infinite alternate;
+}
+
+/* charging beats critical — plugged in means it's fine */
+#battery.charging,
+#battery.plugged,
+#battery.full {
+    color: #73daca;
+    animation: none;
+}
+
+@keyframes pulse {
+    from { color: #f7768e; }
+    to   { color: #db4b4b; }
+}
+
+/* ── Volume ─────────────────────────────────────────────────────────────── */
+
+#wireplumber {
+    padding: 0 11px;
+    color: #bb9af7;
+    transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+
+#wireplumber.muted {
+    color: #3b4261;
+}
+
+/* ── Connectivity group ─────────────────────────────────────────────────── */
+
+#custom-wifi,
+#custom-bluetooth,
+#custom-wlsunset {
+    padding: 0 8px;
+    font-size: 15px;
+    border-radius: 6px;
+    transition: color 150ms ease, background 150ms ease;
+}
+
+#custom-wifi:hover,
+#custom-bluetooth:hover,
+#custom-wlsunset:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+/* wifi */
+#custom-wifi              { color: #565f89; }
+#custom-wifi.connected    { color: #9ece6a; }
+#custom-wifi.disconnected { color: #f7768e; }
+
+/* bluetooth */
+#custom-bluetooth           { color: #565f89; }
+#custom-bluetooth.connected { color: #7aa2f7; }
+#custom-bluetooth.on        { color: #565f89; }
+#custom-bluetooth.off       { color: #3b4261; }
+
+/* night light */
+#custom-wlsunset     { color: #565f89; }
+#custom-wlsunset.on  { color: #e0af68; }
+#custom-wlsunset.off { color: #3b4261; }
+
+/* ── Shortcuts group ───────────────────────────────────────────────────── */
+
+/* app launchers — real brand logos, dimmed until hovered so the bar
+   stays quiet and the logos only "light up" as click targets */
+#image {
+    padding: 0 6px;
+    border-radius: 6px;
+    margin: 0;
+    transition: background 150ms ease;
+}
+
+#image:hover {
+    background: rgba(255, 255, 255, 0.09);
+}
+
+/* ── Tooltips ──────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: rgba(10, 10, 15, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 8px;
+    color: #c0caf5;
+    font-size: 12px;
+}
+
+tooltip label {
+    padding: 6px 8px;
+    color: #c0caf5;
+}

@@ -1,0 +1,13 @@
+configuration {
+    modi:             "command:~/.config/rofi/scripts/command.sh,drun,run,actions:~/.config/rofi/scripts/actions.sh";
+    show-icons:       true;
+    icon-theme:       "Adwaita";
+    drun-display-format: "{name}";
+    display-drun:     "Apps";
+    display-run:      "Commands";
+    kb-mode-next:     "Ctrl+Tab";
+    kb-mode-previous: "Ctrl+Shift+Tab";
+    kb-cancel:        "Escape";
+    font:             "FiraCode Nerd Font Mono 12";
+}
+@theme "~/.config/rofi/themes/dark.rasi"

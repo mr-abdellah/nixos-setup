@@ -1,0 +1,129 @@
+* {
+    ground:    #0d0c12;
+    surface:   #141320;
+    surface2:  #1d1b2e;
+    border-c:  #232136;
+    text:      #e8e4f0;
+    subtext:   #524f6a;
+    accent:    #9580ff;
+    font:      "FiraCode Nerd Font Mono 12";
+}
+
+window {
+    background-color: @ground;
+    border:           1px solid;
+    border-color:     @border-c;
+    border-radius:    8px;
+    width:            520px;
+    padding:          0px;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [ inputbar, modes, listview, message ];
+    spacing:          0px;
+}
+
+inputbar {
+    background-color: transparent;
+    text-color:       @text;
+    padding:          11px 14px;
+    border:           0px 0px 1px 0px solid;
+    border-color:     @border-c;
+    children:         [ prompt, textbox-prompt-colon, entry ];
+    spacing:          0px;
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @accent;
+    font:             "FiraCode Nerd Font Mono 13";
+}
+
+textbox-prompt-colon {
+    background-color: transparent;
+    text-color:       @subtext;
+    expand:           false;
+    str:              "  ";
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @text;
+    placeholder:      "Search…";
+    placeholder-color: @subtext;
+}
+
+modes {
+    background-color: @surface;
+    padding:          4px 14px;
+    border:           0px 0px 1px 0px solid;
+    border-color:     @border-c;
+    spacing:          6px;
+}
+
+button {
+    background-color: transparent;
+    text-color:       #7a7890;
+    padding:          2px 8px;
+    border-radius:    4px;
+    cursor:           pointer;
+}
+
+button selected {
+    background-color: @surface2;
+    text-color:       @text;
+    border:           0px 0px 1px 0px solid;
+    border-color:     @accent;
+}
+
+listview {
+    background-color: transparent;
+    padding:          4px 0px;
+    lines:            9;
+    columns:          1;
+    border:           0px;
+    scrollbar:        false;
+    spacing:          0px;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @text;
+    padding:          7px 14px;
+    spacing:          8px;
+    border:           0px 0px 0px 0px solid;
+    border-radius:    0px;
+}
+
+element selected {
+    background-color: @surface;
+    text-color:       @text;
+    border:           0px 0px 0px 2px solid;
+    border-color:     @accent;
+}
+
+element-icon {
+    background-color: transparent;
+    size:             17px;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
+
+message {
+    background-color: @surface;
+    padding:          7px 18px;
+    border:           1px 0px 0px 0px solid;
+    border-color:     @border-c;
+}
+
+textbox {
+    text-color:       @subtext;
+    background-color: transparent;
+    font:             "FiraCode Nerd Font Mono 11";
+
+}

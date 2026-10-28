@@ -1,0 +1,15 @@
+[metadata]
+name = "cmds"
+description = "A channel to list and execute your commands and aliases"
+requirements = ["zsh"]
+
+[source]
+command = "zsh -c 'source /etc/zshrc 2>/dev/null; source ~/.zshrc 2>/dev/null; print -l ${(k)aliases} ${(k)commands}' | sort -u"
+
+[actions.execute]
+description = "Execute the selected command"
+command = "zsh -ic '{}'"
+mode = "execute"
+
+[keybindings]
+enter = "actions:execute"

@@ -1,0 +1,109 @@
+/*
+ * popup.rasi — compact dropdown for waybar menus
+ * Anchors to the top-right corner, drops below the bar.
+ */
+
+* {
+    ground:   #09090e;
+    surface:  #13121a;
+    surface2: #1c1b27;
+    border-c: #252336;
+    text:     #c0caf5;
+    subtext:  #4a4870;
+    accent:   #7aa2f7;
+    font:     "FiraCode Nerd Font Mono 12";
+}
+
+window {
+    background-color: @ground;
+    border:           1px solid;
+    border-color:     @border-c;
+    border-radius:    10px;
+    width:            320px;
+    location:         northeast;
+    anchor:           northeast;
+    x-offset:         -8px;
+    y-offset:         42px;
+    padding:          0;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [ inputbar, listview, message ];
+    spacing:          0;
+}
+
+inputbar {
+    background-color: @surface;
+    text-color:       @text;
+    padding:          8px 12px;
+    border:           0 0 1px 0 solid;
+    border-color:     @border-c;
+    border-radius:    10px 10px 0 0;
+    children:         [ prompt, textbox-prompt-colon, entry ];
+    spacing:          0;
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @accent;
+    font:             "FiraCode Nerd Font Mono 13";
+}
+
+textbox-prompt-colon {
+    background-color: transparent;
+    text-color:       @subtext;
+    expand:           false;
+    str:              "  ";
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @text;
+    placeholder:      "Filter…";
+    placeholder-color: @subtext;
+}
+
+listview {
+    background-color: transparent;
+    padding:          4px 0;
+    lines:            10;
+    columns:          1;
+    scrollbar:        false;
+    spacing:          0;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @text;
+    padding:          7px 14px;
+    spacing:          8px;
+    border-radius:    0;
+}
+
+element selected {
+    background-color: @surface2;
+    text-color:       @text;
+    border:           0 0 0 2px solid;
+    border-color:     @accent;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
+
+message {
+    background-color: @surface;
+    padding:          6px 14px;
+    border:           1px 0 0 0 solid;
+    border-color:     @border-c;
+    border-radius:    0 0 10px 10px;
+}
+
+textbox {
+    text-color:       @subtext;
+    background-color: transparent;
+    font:             "FiraCode Nerd Font Mono 11";
+}
